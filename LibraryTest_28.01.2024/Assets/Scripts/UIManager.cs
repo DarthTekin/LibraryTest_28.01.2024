@@ -13,16 +13,20 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] GameObject introPanel;
     [SerializeField] GameObject menuPanel;
+    [SerializeField] GameObject loginFailedPanel;
     [SerializeField] AudioClip[] audioClips;
-    
-    TextMeshProUGUI introTxt;
     [SerializeField] string introContent;
+
+    string username;
+    TMP_InputField loginInput;
+    TextMeshProUGUI introTxt;
 
     AudioSource audioSource;
 
     private void Awake()
     {
         introTxt = introPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        loginInput = introPanel.transform.GetChild(2).GetComponent<TMP_InputField>();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -36,6 +40,7 @@ public class UIManager : MonoBehaviour
 
     void ReleaseLoginBtnFNC()
     {
+        introPanel.transform.GetChild(3).GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetEase(Ease.OutBack);
         introPanel.transform.GetChild(2).GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetEase(Ease.OutBack);
     }
 
@@ -45,15 +50,15 @@ public class UIManager : MonoBehaviour
 
         foreach (char c in introContent) 
         {
-            float randomDelay = Random.Range(0.1f, 0.3f);
+            float randomDelay = Random.Range(0.1f, 0.2f);
             
             introTxt.text += c.ToString();
-            audioSource.pitch = Random.Range(0.7f, 1f);
-            audioSource.PlayOneShot(audioClips[Random.Range(0,audioClips.Length)]);
+            //audioSource.pitch = Random.Range(0.2f, 0.5f);
+            audioSource.PlayOneShot(audioClips[Random.Range(0, audioClips.Length)], 0.1f);
 
             if (c.ToString() == ",")
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.4f);
             }
             else
             {
@@ -62,10 +67,30 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void LoginControlFNC()
+    {
+        username = loginInput.text;
+
+        if (username == "admin")
+        {
+            OpenMenuPanelFNC();
+        }
+        else
+        {
+            loginFailedPanel.SetActive(true);
+        }
+    }
+
+    public void ReLoginFNC()
+    {
+        loginFailedPanel.SetActive(false);
+        loginInput.text = string.Empty;
+    }
+
     public void OpenMenuPanelFNC()
     {
-        introPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.1f);
-        menuPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.1f);
+        introPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 3f);
+        menuPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 1f);
     }
 
     public void ExitAdminPanelFNC()
