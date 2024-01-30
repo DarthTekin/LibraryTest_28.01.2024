@@ -12,15 +12,15 @@ public class Book : MonoBehaviour
     public UInt64 ISBN { get; set; }
     public int CopyCount { get; set; }
     public int BookIndex { get; set; }
-    public int CopyReserved { get; set; }
-    public int CopyReturned { get; set; }
+    //public int CopyReserved { get; set; }
+    //public int CopyReturned { get; set; }
     public int CopyAvailable { get; set; }
 
-    public Dictionary<int, string> itemInventory = new Dictionary<int, string>();
-    public Dictionary<string, int> itemCount;
-    public Dictionary<string, int> itemReserved;
-    public Dictionary<string, int> itemReturned;
-    
+    //public Dictionary<int, string> itemInventory = new Dictionary<int, string>();
+    //public Dictionary<string, int> itemCount;
+    //public Dictionary<string, int> itemReserved;
+    //public Dictionary<string, int> itemReturned;
+
     public Book(int bookIndex, string title, string author, ulong ýsbn, int copyCount)
     {
         Title = title;
@@ -28,11 +28,11 @@ public class Book : MonoBehaviour
         ISBN = ýsbn;
         CopyCount = copyCount;
         BookIndex = bookIndex;
-        CopyAvailable = CopyCount - CopyReserved + CopyReturned;
+        
         //itemInventory.Add(Title, CopyCount);
-        for (int i = 1; i <= CopyCount; i++)
-        {
-            itemInventory.Add(i, title);
-        }
+        //for (int i = 1; i <= CopyCount; i++)
+        //{
+        //    itemInventory.Add(i, title);
+        //}
     }
 }
