@@ -12,15 +12,19 @@ public class LibraryManager : MonoBehaviour
     public TMP_InputField copyCount;
     public float duration;
 
-    //int bookQueryCount;
-    int authorQueryCount;
     int bookFoundCount;
     int bookMissingCount;
     int authorFoundCount;
     int authorMissingCount;
-
+    int copyAwailable;
+    int copyCheckedOut;
+    int copyCheckedIn;
+    Vector2 bookOut;
     [HideInInspector] public List<Book> inventory;
     [HideInInspector] public List<Vector2> bookCopy;
+    [HideInInspector] public List<Vector2> bookCheckOut;
+    [HideInInspector] public List<Vector2> bookCheckIn;
+    [HideInInspector] public Dictionary<int, Book> bookRef;
     [HideInInspector] public int bookIndex;
 
     Book book;
@@ -40,8 +44,9 @@ public class LibraryManager : MonoBehaviour
             //book.Author = author.text;
             //book.ISBN = UInt64.Parse(isbn.text);
             //book.CopyCount = int.Parse(copyCount.text);
-            bookIndex = inventory.Count + 1;
             //book.BookIndex = bookIndex;
+            bookIndex = inventory.Count + 1;
+            copyAwailable=int.Parse(copyCount.text);
             inventory.Add(new Book(bookIndex, title.text, author.text, UInt64.Parse(isbn.text), int.Parse(copyCount.text)));
             Debug.Log("item added succesfully");
 
@@ -61,7 +66,7 @@ public class LibraryManager : MonoBehaviour
         
     }
 
-    public void SearchBook()
+    public void SearchBookFNC()
     {
         string searchBookResult = uiManager.searchTitleInput.text.ToLower();
         bookFoundCount = 0;
@@ -82,7 +87,11 @@ public class LibraryManager : MonoBehaviour
                 {
                     bookFoundCount++;
                     Debug.Log("book exist");
-                    uiManager.checkOutTxt.text += book.BookIndex.ToString() + ". " + book.Title + "\n\tAuthor: " + "\t" + book.Author + "\n\tISBN: " + "\t" + book.ISBN + "\n\tCopyCount: " + "\t" + book.CopyCount + "\n" + new string('-', 100) + "\n\n";
+                    uiManager.checkOutTxt.text += book.BookIndex.ToString() + ". " + book.Title + "\n\tAuthor: " + "\t" + book.Author + "\n\tISBN: " + "\t" + book.ISBN + 
+                        "\n\tCopyCount: " + "\t" + book.CopyCount + "\n" + "\n\tCopyAwailable: " + "\t" + copyAwailable + "\n" + new string('-', 150) + "\n\n";
+
+                    bookOut = new Vector2(bookIndex, copyAwailable);
+                    BookCheckOut();
                 }
                 else
                 {
@@ -96,11 +105,56 @@ public class LibraryManager : MonoBehaviour
                 //bookQueryCount++;
             }
         }
-        //if (uiManager.searchTitleInput.text == string.Empty || bookMissingCount == inventory.Count)
-        //{
-        //    uiManager.bookMissingPanel.SetActive(true);
-        //    uiManager.searchTitleInput.text = string.Empty;
-        //}
+        
+    }
+
+    public void SearchAuthorFNC()
+    {
+        string searchAuthorResult = uiManager.searchAuthorInput.text.ToLower();      
+        authorFoundCount = 0;
+        authorMissingCount = 0;
+
+        foreach (Book book in inventory)
+        {
+            if (uiManager.searchAuthorInput.text == string.Empty)
+            {
+                uiManager.authorMissingPanel.SetActive(true);
+                uiManager.searchAuthorInput.text = string.Empty;
+                break;
+            }
+
+            if (uiManager.searchAuthorInput.text != string.Empty)
+            {
+                if (book.Author.ToLower().Contains(searchAuthorResult))
+                {
+                    authorFoundCount++;
+                    Debug.Log("author exist");
+                    uiManager.checkOutTxt.text += book.BookIndex.ToString() + ". " + book.Title + "\n\tAuthor: " + "\t" + book.Author + "\n\tISBN: " + "\t" + book.ISBN +
+                        "\n\tCopyCount: " + "\t" + book.CopyCount + "\n" + "\n\tCopyAwailable: " + "\t" + copyAwailable + "\n" + new string('-', 150) + "\n\n";
+                }
+                else
+                {
+                    authorMissingCount++;
+                }
+            }
+            if (authorMissingCount == inventory.Count && authorFoundCount == 0)
+            {
+                uiManager.authorMissingPanel.SetActive(true);
+                uiManager.searchAuthorInput.text = string.Empty;
+                //bookQueryCount++;
+            }
+        }
+    }
+
+    public void BookCheckOut()
+    {
+        if ((int)bookOut.y > 0)
+        {
+            bookCheckIn.Add(bookOut);
+            bookCheckOut.Remove(bookOut);
+            copyAwailable = (int)bookOut.y - 1;
+            Debug.Log("BookOut: " + bookRef[bookIndex]);
+        }        
     }
 }    
 

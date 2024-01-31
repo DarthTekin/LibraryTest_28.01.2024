@@ -23,11 +23,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] string introContent;
 
     public GameObject searchBookPanel;
+    public GameObject searchAuthorPanel;
     public GameObject bookMissingPanel;
+    public GameObject authorMissingPanel;
     public TextMeshProUGUI checkOutTxt;
     string username;
 
     [HideInInspector] public TMP_InputField searchTitleInput;
+    [HideInInspector] public TMP_InputField searchAuthorInput;
 
 
     TMP_InputField loginInput;
@@ -42,6 +45,7 @@ public class UIManager : MonoBehaviour
         introTxt = introPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         loginInput = introPanel.transform.GetChild(2).GetComponent<TMP_InputField>();
         searchTitleInput = searchBookPanel.transform.GetChild(1).GetComponent<TMP_InputField>();
+        searchAuthorInput = searchAuthorPanel.transform.GetChild(1).GetComponent<TMP_InputField>();
         libraryManager = FindObjectOfType<LibraryManager>();
         audioSource = GetComponent<AudioSource>();
     }
@@ -190,16 +194,34 @@ public class UIManager : MonoBehaviour
         searchBookPanel.SetActive(true);
         bookMissingPanel.SetActive(false);
     }
+    
+    public void OpenSearchAuthorPanelFNC()
+    {
+        checkOutTxt.text = string.Empty;
+        searchAuthorPanel.SetActive(true);
+        authorMissingPanel.SetActive(false);
+    }
 
     public void SearchTitleFNC()
     {   
         searchBookPanel.SetActive(false);
-        libraryManager.SearchBook();
+        libraryManager.SearchBookFNC();
+    }
+    
+    public void SearchAuthorNameFNC()
+    {   
+        searchAuthorPanel.SetActive(false);
+        libraryManager.SearchAuthorFNC();
     }
 
     public void CloseBookMissingPanelFNC()
     {
         bookMissingPanel.SetActive(false);
+    }
+    
+    public void CloseAuthorMissingPanelFNC()
+    {
+        authorMissingPanel.SetActive(false);
     }
 
     public void ExitAdminPanelFNC()
