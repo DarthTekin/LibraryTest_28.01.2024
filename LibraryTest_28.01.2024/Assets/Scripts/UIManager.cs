@@ -6,6 +6,7 @@ using DG.Tweening;
 using TMPro;
 
 
+
 [RequireComponent(typeof(AudioSource))]
 
 public class UIManager : MonoBehaviour
@@ -17,16 +18,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject addBookPanel;
     [SerializeField] GameObject addNewPanel;
     [SerializeField] GameObject listBookPanel;
-    [SerializeField] GameObject checkOutPanel;
+    public GameObject checkOutPanel;
+    [SerializeField] GameObject checkInPanel;
     [SerializeField] AudioClip[] audioClips;
-    [SerializeField] TextMeshProUGUI listBookTxt;
     [SerializeField] string introContent;
 
     public GameObject searchBookPanel;
     public GameObject searchAuthorPanel;
     public GameObject bookMissingPanel;
     public GameObject authorMissingPanel;
+    public TextMeshProUGUI listBookTxt;
     public TextMeshProUGUI checkOutTxt;
+    public TextMeshProUGUI checkInTxt;
+    public Button checkOutBtn;
     string username;
 
     [HideInInspector] public TMP_InputField searchTitleInput;
@@ -59,6 +63,7 @@ public class UIManager : MonoBehaviour
         addBookPanel.GetComponent<RectTransform>().localScale = Vector3.zero;
         listBookPanel.GetComponent<RectTransform>().localScale = Vector3.zero;
         checkOutPanel.GetComponent<RectTransform>().localScale = Vector3.zero;
+        checkInPanel.GetComponent<RectTransform>().localScale = Vector3.zero;
     }
 
     void ReleaseLoginBtnFNC()
@@ -124,11 +129,19 @@ public class UIManager : MonoBehaviour
     public void OpenListBookPanelFNC()
     {
         menuPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => listBookPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
+        listBookTxt.text = string.Empty;
+        libraryManager.ListAllFNC();
     }
 
     public void OpenCheckOutPanelFNC()
     {
         menuPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => checkOutPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
+    }
+    
+    public void OpenCheckInPanelFNC()
+    {
+        menuPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => checkInPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
+        //libraryManager.BookCheckOut();
     }
 
     public void AddNewPanelFNC()
@@ -144,7 +157,7 @@ public class UIManager : MonoBehaviour
         CloseAddNewPanel();
 
         listBookTxt.text = string.Empty;
-        ListAllFNC();
+        libraryManager.ListAllFNC();
     }
 
     public void CloseAddNewPanel()
@@ -157,14 +170,7 @@ public class UIManager : MonoBehaviour
         addNewPanel.SetActive(false);
     }
 
-    public void ListAllFNC()
-    {
-        foreach (Book book in libraryManager.inventory)
-        {
-            listBookTxt.text += book.BookIndex.ToString() + ". " + book.Title + "\n\tAuthor: " + "\t" + book.Author + "\n\tISBN: " + "\t" + book.ISBN + "\n\tCopyCount: " + "\t" + book.CopyCount + "\n" + new string('-', 150) + "\n\n";
-            //Debug.Log(book.Title + " " + book.Author + " " + book.CopyCount + " " + book.ISBN);
-        }
-    }
+   
 
     public void AddBookToMenuPanelFNC()
     {
@@ -186,6 +192,16 @@ public class UIManager : MonoBehaviour
     public void CheckOutToMenuPanelFNC()
     {
         checkOutPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => menuPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
+    }
+
+    public void CheckOutToCheckInPanelFNC()
+    {
+        checkOutPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => checkInPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
+    }
+
+    public void CheckInToMenuPanelFNC()
+    {
+        checkInPanel.GetComponent<RectTransform>().DOScale(Vector3.zero, 0.02f).OnComplete(() => menuPanel.GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f));
     }
 
     public void OpenSearchBookPanelFNC()
